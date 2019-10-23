@@ -37,7 +37,7 @@ html_str = """
     </div>
 </div>
 
-<h2 align="center">Chosen Country</h2>
+<h2 align=center>Chosen Country</h2>
 
 <var></var>
 
@@ -67,62 +67,22 @@ def main(event):	# use API to get place info
 
 		# load as a JSON to access specific data more easily
 		datajson = response.json()
-		countryNumber = random.randint(0, 249)
-		print(datajson[countryNumber]['name'])
-		print(datajson[countryNumber]['capital'])
-		print(datajson[countryNumber]['topLevelDomain'])
-		print(datajson[countryNumber]['region'])
-		print(datajson[countryNumber]['subregion'])
-		print(datajson[countryNumber]['population'])
-		print(datajson[countryNumber]['area'])
-		print(datajson[countryNumber]['languages'])
-		print(datajson[countryNumber]['currencies'])
-		print(datajson[countryNumber])
 
-		name_list = []
-		for json_dict in datajson:
-			name_list.append(json_dict['name'])
-		#print(name_list)
-		
-		f = open("HomeApi.html", "w")
-		f.write(html_str)
-		f.write(datajson[countryNumber]['name'])
-		f.write("<br />" "Capital: " + datajson[countryNumber]['capital'])
-		f.write("<br />" "Continent: " + datajson[countryNumber]['region'])
-		f.write("<br />" "Subregion: " + datajson[countryNumber]['subregion'])
-		f.write("<br />"  "Population: " + str(datajson[countryNumber]['population']))
-		f.write("<br />" "Area: " + str(datajson[countryNumber]['area']) + "km^2")
-		f.write("<br />" "Wesbite domain: " + str(datajson[countryNumber]['topLevelDomain']))
-		f.close()
-
-	
 	else:
 		data = "Error has occured"
 		writeHTML(data)
 
 response = requests.get("https://restcountries.eu/rest/v2/all")		
 datajson = response.json()
-
-def test(event):
-	print(event) #ensure that this line is indented
 	
 def localwindow():
 
 	global name_list
 	global variable
-	global cap
 
 	topframe = Frame(root,bg='#34d994',height='20')
 	topframe.pack(fill=X) # make as wide as root
 	can1 = Canvas(topframe,height='20',width='20',bg="#34d994",highlightthickness=0)
-	'''
-	can1.create_line(0, 5, 20, 5,fill='white')
-	can1.create_line(0, 10, 20, 10,fill='white')
-	can1.create_line(0, 15, 20, 15,fill='white')
-	can1.bind("<Button-1>",main) # keyword 
-	can1.pack(side=LEFT, padx=5, pady=5)
-	'''
-
 
 	imgframe = Frame(root, width=400,height=150)
 	imgframe.pack(fill=None, expand=False)
@@ -140,35 +100,77 @@ def localwindow():
 			foreground = 'black')"""
 	name_list = [] #puts all countries in json into list
 	for json_dict in datajson:
+		full_name = str(json_dict['name'] + ", " + json_dict['capital'] + ", " + json_dict['region'])
 		name_list.append(json_dict['name'])
+		#name_list.append(full_name)
 
 	capital_list = [] #does the same but for capitals
 	for json_dict in datajson:
-		name_list.append(json_dict['capital'])
+		capital_list.append(json_dict['capital'])
+
+	continent_list = []
+	for json_dict in datajson:
+		continent_list.append(json_dict['region'])
+
+	sub_list = []
+	for json_dict in datajson:
+		sub_list.append(json_dict['subregion'])
+
+	pop_list = []
+	for json_dict in datajson:
+		pop_list.append(json_dict['population'])
+
+	area_list = []
+	for json_dict in datajson:
+		area_list.append(json_dict['area'])
+
+	web_list = []
+	for json_dict in datajson:
+		web_list.append(json_dict['topLevelDomain'])
 	
 	variable = StringVar(root) #makes dropdown with list of countries
 	variable.set("Pick a country")
 	w = OptionMenu(root, variable, *name_list)
 	w.pack()
 
-	for i in name_list:
-		if 'name' == variable.get():
-			cap.set('capital')
+	countryNumber = random.randint(0, 249)
 
 	def butfunct(): #prints country selected in dropdown on button press
-		for json_dict in datajson:
-			name_list.append(json_dict['capital'])
 		print(variable.get())
-		for i in name_list:
-			if 'name' == variable.get():
-				cap.set(i.capital)
-				print(cap)
+		index = name_list.index(variable.get())
+		#print(index)
+		print(capital_list[index])
+		print(continent_list[index])
+		print(sub_list[index])
+		print(pop_list[index])
+		print(area_list[index])
+		print(web_list[index])
+
+		f = open("HomeApi.html", "w")
+		f.write(html_str)
+		f.write("<p>" + variable.get())
+		f.write("<br /> <p> Capital: " + capital_list[index])
+		f.write("<br /> <p> Continent: " + continent_list[index])
+		f.write("<br /> <p> Subregion: " + sub_list[index])
+		f.write("<br /> <p> Population: " + str(pop_list[index]))
+		f.write("<br /> <p> Area: " + str(area_list[index]) + " km^2")
+		f.write("<br /> <p> Website domain: " + str(web_list[index]))
+		f.write("<br />")
+		f.write("<h2> <p> Random Country </h2>")
+		f.write("<p>" + datajson[countryNumber]['name'])
+		f.write("<p> Continent: " + datajson[countryNumber]['capital'])
+		f.write("<p> Continent: " + datajson[countryNumber]['region'])
+		f.write("<p> Subregion: " + datajson[countryNumber]['subregion'])
+		f.write("<p> Population: " + str(datajson[countryNumber]['population']))
+		f.write("<p> Area: " + str(datajson[countryNumber]['area']) + " km^2")
+		f.write("<p> Website domain: " + str(datajson[countryNumber]['topLevelDomain']))
+		#f.write("<br />" "Capital: " + datajson[countryNumber]['capital'])
+
 
 	startButton = Button(root, text="Start", command = lambda: butfunct())
 	startButton.bind("<Button-1>", main)
 	startButton.pack()
-	#startButton.grid(row=1, column=1)
-
+	
 	root.mainloop()
 	
 localwindow()
