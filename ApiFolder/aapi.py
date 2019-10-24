@@ -133,8 +133,6 @@ def localwindow():
 	w = OptionMenu(root, variable, *name_list)
 	w.pack()
 
-	countryNumber = random.randint(0, 249)
-
 	def butfunct(): #prints country selected in dropdown on button press
 		print(variable.get())
 		index = name_list.index(variable.get())
@@ -145,6 +143,7 @@ def localwindow():
 		print(pop_list[index])
 		print(area_list[index])
 		print(web_list[index])
+		countryNumber = random.randint(0, 249)
 
 		f = open("HomeApi.html", "w")
 		f.write(html_str)
